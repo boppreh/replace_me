@@ -2,7 +2,7 @@ from inspect import getframeinfo, stack
 from pprint import pformat
 import re
 
-def replace_me(value, as_comment=True):
+def replace_me(value, as_comment=False):
     """
     ** ATTENTION **
     CALLING THIS FUNCTION WILL MODIFY YOUR SOURCE CODE. KEEP BACKUPS.
@@ -71,10 +71,10 @@ if __name__ == '__main__':
 
     # These two lines will become the same:
     # Hello World
-    replace_me("Hello World")
+    replace_me("Hello World", as_comment=True)
 
     # Code generation. Creates a hard coded list of 100 numbers.
-    replace_me('numbers = ' + str(list(range(100))), as_comment=False)
+    replace_me('numbers = ' + str(list(range(100))))
 
     import random
     # The next comment will be replaced with a random number.
@@ -82,5 +82,5 @@ if __name__ == '__main__':
     # ??
 
     # Pseudo-quine, replaces the line with itself.
-    quine = 'replace_me(quine, as_comment=False)'
-    replace_me(quine, as_comment=False)
+    quine = 'replace_me(quine)'
+    replace_me(quine)
