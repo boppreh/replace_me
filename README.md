@@ -8,6 +8,16 @@ When a piece of code calls `replace_me(value)`, that line will be replaced with 
 
 **ATTENTION**: Calling these functions will modify your source code. Keep backups.
 
+## Installation
+
+```
+pip install replace_me
+```
+
+or
+
+[download the single file](https://raw.githubusercontent.com/boppreh/replace_me/master/replace_me.py)
+
 ## Example
 
 ```
