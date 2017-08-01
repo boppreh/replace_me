@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name='replace_me',
-    version='0.1.2',
+    version='0.1.3',
     py_modules=['replace_me'],
     install_requires=[
     ],
