@@ -45,6 +45,9 @@ def replace_me(value, as_comment=False):
     don't mix multiple calls to `replace_me` with multi-line values.
     """
     caller = getframeinfo(stack()[1][0])
+    if caller.filename == '<stdin>':
+        raise ValueError("Can't use `replace_me` module in interactive interpreter.")
+
     with open(caller.filename, 'r+') as f:
         lines = f.read().split('\n')
         spaces, = re.match(r'^(\s*)', lines[caller.lineno-1]).groups()
@@ -77,6 +80,9 @@ def insert_comment(comment):
     don't mix multiple calls to `insert_comment` with multi-line comments.
     """
     caller = getframeinfo(stack()[1][0])
+    if caller.filename == '<stdin>':
+        raise ValueError("Can't use `replace_me` module in interactive interpreter.")
+        
     line_number = caller.lineno-1
     comment_line = line_number + 1
     with open(caller.filename, 'r+') as f:
