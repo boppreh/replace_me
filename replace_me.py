@@ -11,10 +11,8 @@ def replace_me(value, as_comment=True):
     the indentation level. If `as_comment` is True, then `value` is inserted
     as a Python comment and pretty-printed.
 
-    Beware that multi-line values will change the following line numbers, so
-    multiple calls to "replace_me" will result in misalignment. You are free
-    to either use multiple replace_me's in the same source code, OR passing a
-    multi-line value, but not both.
+    Because inserting multi-line values changes the following line numbers,
+    don't mix multiple calls to `replace_me` with multi-line values.
     """
     caller = getframeinfo(stack()[1][0])
     with open(caller.filename, 'r+') as f:
@@ -35,7 +33,7 @@ def replace_me(value, as_comment=True):
         f.truncate()
         f.write('\n'.join(lines))
 
-def replace_comment(comment):
+def insert_comment(comment):
     """
     ** ATTENTION **
     CALLING THIS FUNCTION WILL MODIFY YOUR SOURCE CODE. KEEP BACKUPS.
@@ -44,6 +42,9 @@ def replace_comment(comment):
     exists, it'll be replaced. The current indentation level will be maintained,
     multi-line values will be inserted as multiple comments, and non-str values
     will be pretty-printed.
+
+    Because inserting multi-line comments changes the following line numbers,
+    don't mix multiple calls to `insert_comment` with multi-line comments.
     """
     caller = getframeinfo(stack()[1][0])
     line_number = caller.lineno-1
@@ -72,11 +73,14 @@ if __name__ == '__main__':
     # Hello World
     replace_me("Hello World")
 
-    # Pseudo-quine, replaces the line with itself.
-    quine = 'replace_me(quine, as_comment=False)'
-    replace_me(quine, as_comment=False)
+    # Code generation. Creates a hard coded list of 100 numbers.
+    replace_me('numbers = ' + str(list(range(100))), as_comment=False)
 
     import random
     # The next comment will be replaced with a random number.
-    replace_comment(random.randint(1, 10))
+    insert_comment(random.randint(1, 10))
     # ??
+
+    # Pseudo-quine, replaces the line with itself.
+    quine = 'replace_me(quine, as_comment=False)'
+    replace_me(quine, as_comment=False)
