@@ -4,7 +4,7 @@
 
 Modify your own source code with this piece of Python black magic.
 
-When a piece of code calls `replace_me(value)`, that line will be replaced with the given `value`. If you want to insert a comment and keep the line that inserted it, use `insert_comment(value)`.
+When a piece of code calls `replace_me(value)`, that line will be replaced with the given `value`. If you want to insert a comment and keep the line that inserted it, use `insert_comment(value)`. There's also `test(value)`, which becomes `test(value, expected)` to ensure that the result does not change in future iterations, and `hardcode_me(value)`, which replaces only that part with the hardcoded result of the expression.
 
 It's not true self-modification because the changes are not executed until the next run, but it still has its uses.
 
@@ -22,10 +22,12 @@ or
 
 ## Why?
 
-- When you are doing print-oriented-debugging, it's better to see the values in context.
+- To document example values.
+- As a poor man's debugger, inserting a watched value as a comment.
 - To quickly fetch and check values, REPL-style.
 - To generate a piece of tricky code.
-- To document example values.
+- To hardcode short values that are tricky to compute, slow, or based on random sources.
+- To freeze the behavior of an expression (`test(expression)` becomes `test(expression, hardcoded_result)`).
 - ~~https://imgur.com/r/wtf/OpFcp~~
 
 ## Example
@@ -50,4 +52,13 @@ insert_comment(random.randint(1, 10))
 # Pseudo-quine, replaces the line with itself.
 quine = 'replace_me(quine)'
 replace_me(quine)
+
+test(1+1)
+# becomes
+test(1+1, 2)
+# which asserts the values are equal.
+
+assert hardcode_me(1+1) == 2
+# becomes
+assert 2 == 2
 ```
