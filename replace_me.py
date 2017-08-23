@@ -27,10 +27,10 @@ Example:
     quine = 'replace_me(quine)'
     replace_me(quine)
 """
-
+import re
+import sys
 from inspect import getframeinfo, stack
 from pprint import pformat
-import re
 
 def replace_me(value, as_comment=False):
     """
@@ -101,6 +101,42 @@ def insert_comment(comment):
         f.seek(0)
         f.truncate()
         f.write('\n'.join(lines))
+
+NONE = {}
+def test(value, expected=NONE):
+    """
+    ** ATTENTION **
+    CALLING THIS FUNCTION WILL MODIFY YOUR SOURCE CODE. KEEP BACKUPS.
+
+    If `expected` is not given, replaces with current line with an equality
+    assertion. This is useful when manually testing side-effect-free code to
+    automatically create automated tests.
+    """
+    if hasattr(value, '__next__'):
+        value = list(value)
+        
+    if expected is not NONE:
+        try:
+            assert value == expected
+        except AssertionError:
+            print('TEST FAILED: expected\n{}\ngot\n{}\n'.format(repr(expected), repr(value)))
+            raise
+        return value
+
+    caller = getframeinfo(stack()[1][0])
+    if caller.filename == '<stdin>':
+        raise ValueError("Can't use `replace_me` module in interactive interpreter.")
+        
+    line_number = caller.lineno-1
+    with open(caller.filename, 'r+') as f:
+        lines = f.read().split('\n')
+        spaces, rest = re.match(r'^(\s*)(.+\))', lines[line_number]).groups()
+        lines[line_number] = spaces + rest[:-1] + ', {})'.format(repr(value))
+        f.seek(0)
+        f.truncate()
+        f.write('\n'.join(lines))
+
+    return value
 
 if __name__ == '__main__':
     # If you run this program, the following examples will change.
