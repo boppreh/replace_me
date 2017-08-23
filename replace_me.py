@@ -138,6 +138,69 @@ def test(value, expected=NONE):
 
     return value
 
+def hardcode_me(value):
+    """
+    ** ATTENTION **
+    CALLING THIS FUNCTION WILL MODIFY YOUR SOURCE CODE. KEEP BACKUPS.
+
+    Replaces the call to this functions with the hardcoded representation of
+    the given. Limitations: must use the function "hardcode_me" and the call
+    must be a single line.
+
+        assert hardcode_me(1+1) == 2
+
+    becomes
+
+        assert 2 == 2
+
+    This code does a string replacement in a very naive way, so don't try
+    tricky situations (e.g. having a string containing "hardcode_me()" in the
+    same line).
+    """
+    import re
+
+    caller = getframeinfo(stack()[1][0])
+    if caller.filename == '<stdin>':
+        raise ValueError("Can't use `replace_me` module in interactive interpreter.")
+    if len(caller.code_context) != 1 or 'hardcode_me' not in caller.code_context[0]:
+        raise ValueError("Can only hardcode single-line calls that use the name 'hardcode_me'.")
+
+    line_number = caller.lineno-1
+    with open(caller.filename, 'r+') as f:
+        lines = f.read().split('\n')
+
+        line = lines[line_number]
+
+        def replace(match):
+            # Our goal here is to replace everything inside the matching
+            # parenthesis, while ignoring literal strings.
+            parens = 1
+            index = 0
+            string = match.group(1)
+            while parens:
+                if string[index] == ')':
+                    parens -= 1
+                elif string[index] == '(':
+                    parens += 1
+                elif string[index] in '"\'':
+                    while index is not None:
+                        index = string.index(string[index], index+1)
+                        if string[index-1] != '\\':
+                            # TODO: \\" breaks this
+                            break
+                if index is None or index >= len(string):
+                    raise ValueError('Found unbalaced parenthesis while trying to hardcode value. Did you use line breaks?')
+                index += 1
+            return repr(value) + string[index:]
+        modified_line = re.sub(r'(?:replace_me\.)?hardcode_me\((.+)', replace, line)
+
+        lines = lines[:line_number] + [modified_line] + lines[line_number+1:]
+        f.seek(0)
+        f.truncate()
+        f.write('\n'.join(lines))
+
+    return value
+
 if __name__ == '__main__':
     # If you run this program, the following examples will change.
 
@@ -156,3 +219,11 @@ if __name__ == '__main__':
     # Pseudo-quine, replaces the line with itself.
     quine = 'replace_me(quine)'
     replace_me(quine)
+
+    test(1+1)
+    # becomes
+    test(1+1, 2)
+
+    assert hardcode_me(1+1) == 2
+    # becomes
+    assert 2 == 2
