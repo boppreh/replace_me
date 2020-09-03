@@ -48,7 +48,7 @@ def replace_me(value, as_comment=False):
     if caller.filename == '<stdin>':
         raise ValueError("Can't use `replace_me` module in interactive interpreter.")
 
-    with open(caller.filename, 'r+') as f:
+    with open(caller.filename, 'r+', encoding='utf-8') as f:
         lines = f.read().split('\n')
         spaces, = re.match(r'^(\s*)', lines[caller.lineno-1]).groups()
 
@@ -85,7 +85,7 @@ def insert_comment(comment):
         
     line_number = caller.lineno-1
     comment_line = line_number + 1
-    with open(caller.filename, 'r+') as f:
+    with open(caller.filename, 'r+', encoding='utf-8') as f:
         lines = f.read().split('\n')
         spaces, = re.match(r'^(\s*)', lines[line_number]).groups()
 
@@ -128,7 +128,7 @@ def test(value, expected=NONE):
         raise ValueError("Can't use `replace_me` module in interactive interpreter.")
         
     line_number = caller.lineno-1
-    with open(caller.filename, 'r+') as f:
+    with open(caller.filename, 'r+', encoding='utf-8') as f:
         lines = f.read().split('\n')
         spaces, rest = re.match(r'^(\s*)(.+\))', lines[line_number]).groups()
         lines[line_number] = spaces + rest[:-1] + ', {})'.format(repr(value))
@@ -166,7 +166,7 @@ def hardcode_me(value):
         raise ValueError("Can only hardcode single-line calls that use the name 'hardcode_me'.")
 
     line_number = caller.lineno-1
-    with open(caller.filename, 'r+') as f:
+    with open(caller.filename, 'r+', encoding='utf-8') as f:
         lines = f.read().split('\n')
 
         line = lines[line_number]
