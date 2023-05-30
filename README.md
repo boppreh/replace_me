@@ -34,7 +34,6 @@ or
 
 ```
 import replace_me
-from replace_me import replace_me, insert_comment
 
 # If you run this program, this source code will change.
 
