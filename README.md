@@ -33,32 +33,33 @@ or
 ## Example
 
 ```
+import replace_me
 from replace_me import replace_me, insert_comment
 
 # If you run this program, this source code will change.
 
 # These two lines will become the same:
 # Hello World
-replace_me("Hello World", as_comment=True)
+replace_me.replace_me("Hello World", as_comment=True)
 
 # Code generation. Creates a hard coded list of 100 numbers.
-replace_me('numbers = ' + str(list(range(100))))
+replace_me.replace_me('numbers = ' + str(list(range(100))))
 
 import random
 # The next comment will be replaced with a random number.
-insert_comment(random.randint(1, 10))
+replace_me.insert_comment(random.randint(1, 10))
 # ??
 
 # Pseudo-quine, replaces the line with itself.
-quine = 'replace_me(quine)'
-replace_me(quine)
+quine = 'replace_me.replace_me(quine)'
+replace_me.replace_me(quine)
 
-test(1+1)
-# becomes
-test(1+1, 2)
+replace_me.test(1+1)
+# `test` edits itself to add the expected value:
+replace_me.test(1+1, 2)
 # which asserts the values are equal.
 
-assert hardcode_me(1+1) == 2
+assert replace_me.hardcode_me(1+1) == 2
 # becomes
 assert 2 == 2
 ```
